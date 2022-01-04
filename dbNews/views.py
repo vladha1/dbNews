@@ -8,14 +8,15 @@ from datetime import datetime
 from decimal import Decimal
 import requests
 
-import datefinder
 from operator import itemgetter
-import feedparser
+
 from io import StringIO
 import io
 import base64
 import urllib
 import numpy as np
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 
 def home(request):
@@ -40,7 +41,8 @@ def nsetoplosers():
     return nse_get_top_losers()[['symbol','lastPrice','pChange']].to_dict('records')
 
 
-def dbPull():
+@api_view(['GET'])
+def dbPull(request):
     import urllib
     import pymongo
     url = "mongodb+srv://vladha:"+urllib.parse.quote("Energy123")+"@cluster0.ju4zq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
@@ -58,13 +60,7 @@ def dbPull():
         dict['disp']=str(dict.get('last'))+" ("+str(dict.get('percChange'))+")"
 
 
-
-    #topic="India"
-    #cursor=feedcol.find({'$text': {'$search': topic}})
-
-        # Sort by 'score' field.
     
-    #print ([all,mktdata])
-    return [all,mktdata]
+    return Response({'all':all,'mktdata':mktdata})
 
 
